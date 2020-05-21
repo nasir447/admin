@@ -23,16 +23,16 @@ class _Pr extends State<Pr>{
 
   String check;
   
-  File uploadimage; //variable for choosed file
+  //File uploadimage; //variable for choosed file
 
   Future<void> chooseImage() async {
         var choosedimage = await ImagePicker.pickImage(source: ImageSource.gallery);
         //set source: ImageSource.camera to get image from camera
         setState(() {
-            uploadimage = choosedimage;
+            //uploadimage = choosedimage;
         });
   }
-
+/*
   Future<void> uploadImage() async {
      //show your own loading or progressing code here
 
@@ -79,16 +79,16 @@ class _Pr extends State<Pr>{
        print("Error during converting to Base64");
        //there is error during converting file image to base64 encoding. 
     }
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
-    //if (widget.bytes == null)
-      //return new Container();
+    if (widget.bytes == null)
+      return new Container();
     var bytes = Base64Decoder().convert(widget.bytes);
     print(bytes);
     return Scaffold(
          appBar: AppBar(
-           title: Text("${widget.bytes}"),
+           title: Text("abc"),
            backgroundColor: Colors.deepOrangeAccent,
          ),
          body:Container(
@@ -98,7 +98,7 @@ class _Pr extends State<Pr>{
                     mainAxisAlignment: MainAxisAlignment.center, //content alignment to center 
                     children: <Widget>[
                         Container(  //show image here after choosing image
-                            child:uploadimage == null? 
+                            child:bytes == null? 
                                Container(): //if uploadimage is null then show empty container
                                Container(   //elese show image here
                                   child: new ListTile(
@@ -109,12 +109,12 @@ class _Pr extends State<Pr>{
 
                         Container( 
                             //show upload button after choosing image
-                          child:uploadimage == null? 
+                          child:bytes == null? 
                                Container(): //if uploadimage is null then show empty container
                                Container(   //elese show uplaod button
                                   child:RaisedButton.icon(
                                     onPressed: (){
-                                        uploadImage();
+                                        //uploadImage();
                                         //start uploading image
                                     }, 
                                     icon: Icon(Icons.file_upload), 
@@ -141,7 +141,7 @@ class _Pr extends State<Pr>{
                         Container(
                           child: RaisedButton.icon(
                             onPressed: (){
-                                changeImage(); // call choose image function
+                                //changeImage(); // call choose image function
                             },
                             icon:Icon(Icons.folder_open),
                             label: Text("CHOOSE IMAGE"),

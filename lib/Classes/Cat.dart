@@ -3,6 +3,7 @@ class ItemCategory{
   String catName;
   String catDesc;
   bool matched = false;
+  String image;
 
   ItemCategory({this.catID, this.catName, this.catDesc});
 

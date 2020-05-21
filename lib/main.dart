@@ -16,7 +16,7 @@ class Admin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ImageUpload(),
+      home: Home(),
       routes: {
         '/home': (context) => Home(),
         '/menu': (context) => Menu(),

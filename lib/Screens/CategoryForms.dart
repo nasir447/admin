@@ -8,6 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:Admin/Screens/Category.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'package:Admin/Screens/pr.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 
 class CategoryForm extends StatefulWidget {
   @override
@@ -15,6 +21,15 @@ class CategoryForm extends StatefulWidget {
 }
 
 class _CategoryFormState extends State<CategoryForm> {
+
+  File uploadimage;
+
+  Future<void> chooseImage() async {
+        var choosedimage = await ImagePicker.pickImage(source: ImageSource.gallery);
+        setState(() {
+            uploadimage = choosedimage;
+        });
+  }
 
   Future<List<ItemCategory>> getCategory()async{
     http.Response response= await db.getCategory();
@@ -88,6 +103,7 @@ class _CategoryFormState extends State<CategoryForm> {
                             )
                         ),
                       ),
+                      SizedBox(height:20.0),
                       TextField(
                         onChanged: (desc){
                           //item.ssetPassword(Password);
@@ -106,12 +122,54 @@ class _CategoryFormState extends State<CategoryForm> {
                             )
                         ),
                       ),
+                      SizedBox(height:20.0),
+                      uploadimage == null ? InkWell(
+                        onTap: (){
+                          chooseImage();
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(top: 80),
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          child: Card(
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                            ),
+                            color:   Color.fromRGBO(244, 75, 89, 1),
+                            margin: EdgeInsets.only(top: 20),
+                            child: Center(
+                                child: Text(
+                                  "CHOOSE IMAGE",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.white
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+                      ) : Container(  //show image here after choosing image
+                            child:uploadimage == null? 
+                               Container(): //if uploadimage is null then show empty container
+                               Container(   //elese show image here
+                                  child: SizedBox( 
+                                     height:150,
+                                     child:Image.file(uploadimage) //load image from file
+                                  )
+                               )
+                        ),
                       InkWell(
                         onTap: ()async{
                           setState(() {
                             spinner = true;
                           });
-                         db.setCategory(item.catName, item.catDesc);
+                        List<int> imageBytes = uploadimage.readAsBytesSync();
+                        String baseimage = base64Encode(imageBytes);
+                        item.image = baseimage;
+                        print(baseimage);
+                         db.setCategory(item.catName, item.catDesc, item.image);
                          setState(() {
                            spinner = false;
                          });
@@ -130,8 +188,6 @@ class _CategoryFormState extends State<CategoryForm> {
                              });
                              dynamic print = await db.createCategory();
                              showAlertDialog(context, print);
-                             //dynamic newCat = await getCategory();
-                             //print("In Category " + newCat);
                              Navigator.pushReplacement(
                                context,
                                MaterialPageRoute(

@@ -13,6 +13,7 @@ class Database{
   int _catID;
   String _catName;
   String _desc;
+  String _catImg;
   
   Database(){
     _name = null;
@@ -89,9 +90,10 @@ class Database{
    return await response;
   }
 
-  void setCategory(String name, String description){
+  void setCategory(String name, String description, String img){
     _catName = name;
     _desc = description;
+    _catImg = img;
   }
 
   Future<String> createCategory()async{
@@ -99,8 +101,10 @@ class Database{
           body: {
             "name":_catName,
             "desc":_desc,
+            "img": "abc",
           }
       );
+      print(response.body);
       return response.body;
   }
 

@@ -32,10 +32,11 @@ class _CategoryState extends State<Category> {
   Future<List<ItemCategory>> getCategory()async{
     http.Response response= await db.getCategory();
     var data=jsonDecode(response.body);
-
+    print(data);
     List<ItemCategory> listCategory = List();
     for(var i in data){
-      ItemCategory item = ItemCategory(catID: i["cat_id"], catName: i["cat_name"], catDesc: i['cat_desc']);
+      ItemCategory item = ItemCategory(catID: i["cat_id"], catName: i["cat_name"], catDesc: i['cat_desc'], image: i['cat_img']);
+      item.func();
       listCategory.add(item);
     }
     print(listCategory.length);
@@ -100,6 +101,7 @@ class _CategoryState extends State<Category> {
                             children: <Widget>[
                               InkWell(
                                 onTap: (){
+                                  print(snapshot.data[index].image);
                                   Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -119,7 +121,11 @@ class _CategoryState extends State<Category> {
                                               color: Colors.grey
                                            //   color: dailyDealsClicked?Colors.red:Colors.grey,
                                             )),
-                                        child: Icon(Icons.fastfood),
+                                            child: snapshot.data[index].bytes==null?
+                                         Text("data")
+                                          : new ListTile(
+                                          leading: new Image.memory(snapshot.data[index].bytes), //load image from file
+                                  )
                                       ),
                                     ),
                                     Text(
@@ -552,6 +558,14 @@ class _CategoryState extends State<Category> {
               ),
             ],
           )
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            Navigator.pushReplacementNamed(context, "/foodform");
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Color.fromRGBO(244, 75, 89, 1),
+          hoverColor: Color.fromRGBO(234, 65, 99, 5),
         ),
       ),
     );

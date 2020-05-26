@@ -1,8 +1,8 @@
 import 'package:Admin/Screens/Category.dart';
 import 'package:Admin/Screens/CategoryDisplay.dart';
 import 'package:Admin/Screens/CategoryForms.dart';
+import 'package:Admin/Screens/FoodForm.dart';
 import 'package:Admin/Screens/Home.dart';
-import 'package:Admin/Screens/Menu.dart';
 import 'package:Admin/Screens/SignIn.dart';
 import 'package:Admin/Screens/Signup.dart';
 import 'package:Admin/Screens/Update.dart';
@@ -19,7 +19,7 @@ class Admin extends StatelessWidget {
       home: Home(),
       routes: {
         '/home': (context) => Home(),
-        '/menu': (context) => Menu(),
+        '/foodform': (context) => FoodForm(),
         '/update': (context) => Update(),
         '/categoryList': (context) => Category(),
         '/login': (context) => Login(),

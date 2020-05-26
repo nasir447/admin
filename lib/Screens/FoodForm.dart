@@ -1,7 +1,7 @@
+import 'package:Admin/Classes/FoodItem.dart';
 import 'package:flutter/material.dart';
 import 'package:Admin/Services/Authentication.dart';
 import 'package:Admin/Classes/Cat.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,18 +9,15 @@ import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:Admin/Screens/Category.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:Admin/Screens/pr.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:typed_data';
 
-class CategoryForm extends StatefulWidget {
+class FoodForm extends StatefulWidget {
   @override
-  _CategoryFormState createState() => _CategoryFormState();
+  _FoodFormState createState() => _FoodFormState();
 }
 
-class _CategoryFormState extends State<CategoryForm> {
+class _FoodFormState extends State<FoodForm> {
 
   File uploadimage;
   List<int> imageBytes;
@@ -32,29 +29,31 @@ class _CategoryFormState extends State<CategoryForm> {
       });
       imageBytes = uploadimage.readAsBytesSync();
       String baseimage = base64Encode(imageBytes);
-      item.image = baseimage;
-      if (item.image.length > 8000000){
+      item.foodimage = baseimage;
+      if (item.foodimage.length > 8000000){
         showAlertDialog(context, "Image is too Large. Choose Another.");
         uploadimage = null;
-        item.image = null;
+        item.foodimage = null;
       }
   }
 
-  Future<List<ItemCategory>> getCategory()async{
+  Future<List<FoodItem>> getCategory()async{
     http.Response response= await db.getCategory();
     var data=jsonDecode(response.body);
 
-    List<ItemCategory> listCategory = List();
+    List<FoodItem> menu = List();
+
     for(var i in data){
-      ItemCategory item = ItemCategory(catID: i["cat_id"], catName: i["cat_name"], catDesc: i['cat_desc']);
-      listCategory.add(item);
+      FoodItem item = FoodItem(foodID: i["food_id"], foodName: i["food_name"], foodDesc: i['food_desc']);
+      item.func();
+      menu.add(item);
     }
-    print(listCategory.length);
-    return await listCategory;
+    print(menu.length);
+    return await menu;
   }
 
   Database db = Database();
-  ItemCategory item = ItemCategory();
+  FoodItem item = FoodItem();
   bool spinner = false;
   
   @override
@@ -66,7 +65,7 @@ class _CategoryFormState extends State<CategoryForm> {
         backgroundColor:  Colors.white,
         centerTitle: true,
         title: Text(
-          "Add A New Category",
+          "Add A New food Item",
           style: GoogleFonts.lato(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
@@ -78,14 +77,14 @@ class _CategoryFormState extends State<CategoryForm> {
         inAsyncCall: spinner,
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(context).size.height * 2,
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(top: 0, bottom: 0,left: 15),
                     child: Text(
-                      "Add A Category",
+                      "Add A Food Item",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.white),
                     ),
                   ),
@@ -97,7 +96,7 @@ class _CategoryFormState extends State<CategoryForm> {
                       TextField(
                         onChanged: (name){
                           //user.setEmail(email);
-                          item.catName = name;
+                          item.foodName = name;
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -105,7 +104,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                     color: Colors.pink
                                 )
                             ),
-                            labelText: "Category Name",
+                            labelText: "Food Item Name",
                             //errorText: item.isCatNaneValid() ? "" : "Invalid username",
                             labelStyle: TextStyle(
                               color: Colors.grey,
@@ -117,7 +116,7 @@ class _CategoryFormState extends State<CategoryForm> {
                       TextField(
                         onChanged: (desc){
                           //item.ssetPassword(Password);
-                          item.catDesc = desc;
+                          item.foodDesc = desc;
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -126,6 +125,63 @@ class _CategoryFormState extends State<CategoryForm> {
                                 )
                             ),
                             labelText: "Discription",
+                            labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            )
+                        ),
+                      ),
+                      SizedBox(height:20.0),
+                      TextField(
+                        onChanged: (foodPrice){
+                          //item.ssetPassword(Password);
+                          item.foodPrice = foodPrice;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.pink
+                                )
+                            ),
+                            labelText: "Food Price",
+                            labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            )
+                        ),
+                      ),
+                      SizedBox(height:20.0),
+                      TextField(
+                        onChanged: (discPrice){
+                          //item.ssetPassword(Password);
+                          item.discPrice = discPrice;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.pink
+                                )
+                            ),
+                            labelText: "Descount",
+                            labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            )
+                        ),
+                      ),
+                      SizedBox(height:20.0),
+                      TextField(
+                        onChanged: (catName){
+                          //item.ssetPassword(Password);
+                          item.catName = catName;
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.pink
+                                )
+                            ),
+                            labelText: "Category Name",
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -175,24 +231,23 @@ class _CategoryFormState extends State<CategoryForm> {
                           setState(() {
                             spinner = true;
                           });
-                         db.setCategory(item.catName, item.catDesc, item.image);
+                         db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.foodimage, item.catName);
                          setState(() {
                            spinner = false;
                          });
                         
-                         String result = await db.checkCat();
-                          if(result !="0"){
+                         var result = await db.getCat();
+                          if(result !=false){
                             setState(() {
                               spinner=false;
                             });
-                            if(result=="1")
-                              showAlertDialog(context,"Category Already Exist");
+                            showAlertDialog(context,"Category Doesent Exist");
                           }
-                          else if(result == "0"){ 
+                          else if(result == true){ 
                              setState(() {
                                spinner=false;
                              });
-                             dynamic print = await db.createCategory();
+                             dynamic print = await db.createFood();
                              showAlertDialog(context, print);
                              Navigator.pushReplacement(
                                context,

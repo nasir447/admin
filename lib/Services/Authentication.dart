@@ -1,4 +1,5 @@
 import 'package:Admin/Classes/Cat.dart';
+import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,10 +11,15 @@ class Database{
   String _phone;
   String _password;
   String _url;
-  int _catID;
   String _catName;
   String _desc;
   String _catImg;
+  String _foodName;
+  String _foodDesc;
+  String _foodimage;
+  String _foodPrice;
+  String _discPrice;
+  int _catId;
   
   Database(){
     _name = null;
@@ -96,12 +102,36 @@ class Database{
     _catImg = img;
   }
 
+  void setFoodItem(String name, String description, String price, String discount, String cat_Name, String img){
+    _catName = cat_Name;
+    _foodName = name;
+    _foodDesc = description;
+    _foodPrice = price;
+    _discPrice = discount;
+    _foodimage = img;
+  }
+
   Future<String> createCategory()async{
       http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/CatNewEntry.php",
           body: {
             "name":_catName,
             "desc":_desc,
-            "img": "abc",
+            "img": _catImg,
+          }
+      );
+      print(response.body);
+      return response.body;
+  }
+
+  Future<String> createFood()async{
+      http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/createFood.php",
+          body: {
+            "name":_foodName,
+            "desc":_foodDesc,
+            "img": _foodimage,
+            "price": _foodPrice,
+            "discount": _discPrice,
+            "cat_id": _catId
           }
       );
       print(response.body);
@@ -116,4 +146,26 @@ class Database{
       );
       return response.body;
   } 
+
+  Future<bool> getCat()async{
+    print(_catName);
+      http.Response response = await http.post(
+          "https://vibrant-millions.000webhostapp.com/getCat.php",
+          body: {
+            "name":"RollS",
+          }
+      );
+      if(response.body == '0'){
+        print("Category does not exist");
+        print(response.body);
+        return false;
+      }
+      else {
+        print(response.body);
+        var str = jsonDecode(response.body)['cat_id'];
+        print(str);
+        _catId = int.parse(response.body);
+        return true;
+      }
+  }
 }

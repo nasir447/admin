@@ -19,6 +19,7 @@ class _CategoryDisplayState extends State<CategoryDisplay> {
 
   @override
   Widget build(BuildContext context) {
+    widget.category.func();
     return Scaffold(
       resizeToAvoidBottomPadding:false,
         backgroundColor: Color.fromRGBO(246, 246, 246, 1),
@@ -43,6 +44,9 @@ class _CategoryDisplayState extends State<CategoryDisplay> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Container(
+                child: Image.memory(widget.category.bytes),
+              ),
               Text(
                 "Category ID = ${widget.category.catID}" ,
                 style: TextStyle(fontSize: 20.0),

@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 class ItemCategory{
   String catID;
   String catName;
   String catDesc;
   bool matched = false;
   String image;
+  List<int> bytes;
 
-  ItemCategory({this.catID, this.catName, this.catDesc});
+  ItemCategory({this.catID, this.catName, this.catDesc, this.image});
 
+  void func(){
+    if (image != null)
+      bytes = Base64Decoder().convert(image);
+  }
   /*bool isCatNaneValid(){
      if(!(catName.isEmpty()) == true)
       return true;

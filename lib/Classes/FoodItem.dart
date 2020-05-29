@@ -10,7 +10,7 @@ class FoodItem{
   List<int> foodbytes;
   String catName;
 
-  FoodItem({this.foodID, this.foodName, this.foodDesc, this.foodimage, this.foodPrice, this.discPrice});
+  FoodItem({this.foodName, this.foodDesc, this.foodimage, this.foodPrice, this.discPrice});
 
   void fName(String name){
     this.foodName = name;

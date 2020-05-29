@@ -7,6 +7,7 @@ class ItemCategory{
   bool matched = false;
   String image;
   List<int> bytes;
+  bool isClicked = false;
 
   ItemCategory({this.catID, this.catName, this.catDesc, this.image});
 

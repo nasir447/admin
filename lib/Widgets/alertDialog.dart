@@ -5,6 +5,7 @@ showAlertDialog(BuildContext context,String sms) {
     child: Text("OK"),
     onPressed: () {
       Navigator.pop(context);
+      Navigator.pop(context);
     },
   );
 

@@ -89,6 +89,16 @@ class Database{
       return  await user;
   }
 
+  Future<http.Response> getMenu(String cat_id)async{
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/getMenu.php",
+      body: {
+          "cat_id":cat_id
+      }
+    );
+    return await response;
+  }
+
   Future<http.Response> getCategory()async{
     http.Response response = await http.get(
         "https://vibrant-millions.000webhostapp.com/getCatogories.php"
@@ -104,6 +114,7 @@ class Database{
 
   void setFoodItem(String name, String description, String price, String discount, String cat_Name, String img){
     _catName = cat_Name;
+    //print("Category Name" + cat_Name);
     _foodName = name;
     _foodDesc = description;
     _foodPrice = price;
@@ -131,7 +142,7 @@ class Database{
             "img": _foodimage,
             "price": _foodPrice,
             "discount": _discPrice,
-            "cat_id": _catId
+            "cat_id": _catId.toString()
           }
       );
       print(response.body);
@@ -148,24 +159,25 @@ class Database{
   } 
 
   Future<bool> getCat()async{
-    print(_catName);
+    //print(_catName);
+    print("start getCat");
       http.Response response = await http.post(
           "https://vibrant-millions.000webhostapp.com/getCat.php",
           body: {
-            "name":"RollS",
+            "name": _catName,
           }
       );
-      if(response.body == '0'){
+      if(response.body == null || response.body == "null"){
         print("Category does not exist");
         print(response.body);
         return false;
       }
       else {
-        print(response.body);
         var str = jsonDecode(response.body)['cat_id'];
-        print(str);
-        _catId = int.parse(response.body);
+        print(str + "*");
+        _catId = int.parse(str);
         return true;
       }
+      //return true;
   }
 }

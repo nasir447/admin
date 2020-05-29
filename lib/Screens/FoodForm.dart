@@ -37,7 +37,7 @@ class _FoodFormState extends State<FoodForm> {
       }
   }
 
-  Future<List<FoodItem>> getCategory()async{
+  /*Future<List<FoodItem>> getCategory()async{
     http.Response response= await db.getCategory();
     var data=jsonDecode(response.body);
 
@@ -50,7 +50,7 @@ class _FoodFormState extends State<FoodForm> {
     }
     print(menu.length);
     return await menu;
-  }
+  }*/
 
   Database db = Database();
   FoodItem item = FoodItem();
@@ -174,6 +174,7 @@ class _FoodFormState extends State<FoodForm> {
                         onChanged: (catName){
                           //item.ssetPassword(Password);
                           item.catName = catName;
+                          print(item.catName);
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -231,23 +232,30 @@ class _FoodFormState extends State<FoodForm> {
                           setState(() {
                             spinner = true;
                           });
-                         db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.foodimage, item.catName);
+                         db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.catName, item.foodimage);
                          setState(() {
                            spinner = false;
                          });
                         
                          var result = await db.getCat();
-                          if(result !=false){
+                          if(result ==false){
                             setState(() {
                               spinner=false;
                             });
-                            showAlertDialog(context,"Category Doesent Exist");
+                            await showAlertDialog(context,"Category Doesent Exist");
+                            /*Navigator.pushReplacement(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (context) =>(Category())
+                               ));*/
+                            //Navigator.pop(context);
+
                           }
                           else if(result == true){ 
                              setState(() {
                                spinner=false;
                              });
-                             dynamic print = await db.createFood();
+                             String print = await db.createFood();
                              showAlertDialog(context, print);
                              Navigator.pushReplacement(
                                context,

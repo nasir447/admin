@@ -25,7 +25,7 @@ class RiderButton extends StatelessWidget {
             ],
           ),
           onPressed: () => {
-            //Navigator.pushNamed(context, '/cart')
+            Navigator.pushNamed(context, '/foodform')
           }),
     );
   }

@@ -15,11 +15,22 @@ class ItemCategory{
     if (image != null)
       bytes = Base64Decoder().convert(image);
   }
-  /*bool isCatNaneValid(){
-     if(!(catName.isEmpty()) == true)
-      return true;
-     return false;
-   }*/
+  
+  String isCategoryValid(){
+    if(catName.isEmpty){
+      return "Category Name is empty";
+    } else{
+        return "";
+    }
+  }
+
+  String isCategoryDiscValid(){
+    if(catName.isEmpty){
+      return "Category Discription is empty";
+    } else{
+        return "";
+    }
+  }
 
    factory ItemCategory.fromJson(Map <String, dynamic> json){
      return ItemCategory(

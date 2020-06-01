@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:Admin/Classes/Cat.dart';
 import 'package:Admin/Classes/FoodItem.dart';
 import 'package:Admin/Screens/CategoryDisplay.dart';
 import 'package:Admin/Services/Authentication.dart';
+import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,7 +51,8 @@ class _CategoryState extends State<Category> {
     var data = jsonDecode(response.body);
     List<FoodItem> listFood = List();
     for (var i in data) {
-      FoodItem food = FoodItem(foodName: i["f_name"], foodDesc: i["ingredients"], foodimage: i["img"], foodPrice: i["f_price"], discPrice: i["d_price"]);
+      FoodItem food = FoodItem(foodID: i["f_id"], foodName: i["f_name"], foodDesc: i["ingredients"], foodimage: i["f_img"], foodPrice: i["f_price"], discPrice: i["d_price"]);
+      print(food.foodName);
       food.func();
       listFood.add(food);
     }
@@ -154,7 +158,7 @@ class _CategoryState extends State<Category> {
                                           });
                                         },
                                         onLongPress: (){
-                                          Navigator.pushReplacement(
+                                          Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>(CategoryDisplay(category: snapshot.data[index],))
@@ -272,7 +276,7 @@ class _CategoryState extends State<Category> {
                                                 child: Column(
                                                   children: <Widget>[
                                                     ListTile(
-                                                      title: AutoSizeText(snapshot.data[index].fooodName,
+                                                      title: AutoSizeText(snapshot.data[index].foodName,
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 22
@@ -318,10 +322,14 @@ class _CategoryState extends State<Category> {
                                                   elevation: 5,
                                                   child: IconButton(
                                                       icon: Icon(
-                                                        Icons.remove_circle_outline,
+                                                        Icons.delete_sweep,
                                                         size: 25,
                                                         color: Colors.pinkAccent,),
-                                                      onPressed: (){}
+                                                      onPressed: ()async{
+                                                        var result = await db.deleteFood(snapshot.data[index].foodID);
+                                                        result == "0" ? showAlertDialog(context, "Food could not be deleted.")
+                                                        : sucessDialog(context, "Food Deleted Succesfully");
+                                                      }
                                                   ),
                                                 ),
                                               ),

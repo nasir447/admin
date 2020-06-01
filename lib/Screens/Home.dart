@@ -1,4 +1,7 @@
+import 'package:Admin/Widgets/AddCatButton.dart';
+import 'package:Admin/Widgets/AddFoodButton.dart';
 import 'package:Admin/Widgets/BottomNavBar.dart';
+import 'package:Admin/Widgets/MenuButton.dart';
 import 'package:Admin/Widgets/OrderButton.dart';
 import 'package:Admin/Widgets/RiderButton.dart';
 import 'package:Admin/Widgets/Update.dart';
@@ -63,11 +66,11 @@ class _HomeState extends State<Home> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 120.0),
-            Update(),
+            MenuButton(),
             SizedBox(height: 30.0),
-            OrderButton(),
+            AddCategory(),
             SizedBox(height: 30.0),
-            RiderButton(),
+            AddFoodButton(),
           ],
         )
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Update extends StatelessWidget {
+class MenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +15,7 @@ class Update extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
                 child: Text(
-                  "Update Menu",
+                  "Menu",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 25.0,
@@ -25,7 +25,7 @@ class Update extends StatelessWidget {
             ],
           ),
           onPressed: () => {
-            Navigator.pushNamed(context, '/category')
+            Navigator.pushNamed(context, '/categoryList')
           }),
     );
   }

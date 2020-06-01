@@ -4,10 +4,7 @@ import 'package:Admin/Screens/CategoryForms.dart';
 import 'package:Admin/Screens/FoodForm.dart';
 import 'package:Admin/Screens/Home.dart';
 import 'package:Admin/Screens/SignIn.dart';
-import 'package:Admin/Screens/Signup.dart';
-import 'package:Admin/Screens/Update.dart';
 import 'package:Admin/Screens/authenticate.dart';
-import 'package:Admin/Screens/img.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(Admin());
@@ -16,11 +13,10 @@ class Admin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(),
+      home: Authentication(),
       routes: {
         '/home': (context) => Home(),
         '/foodform': (context) => FoodForm(),
-        '/update': (context) => Update(),
         '/categoryList': (context) => Category(),
         '/login': (context) => Login(),
         '/category': (context) => CategoryForm(),

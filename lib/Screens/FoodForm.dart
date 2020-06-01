@@ -21,6 +21,7 @@ class _FoodFormState extends State<FoodForm> {
 
   File uploadimage;
   List<int> imageBytes;
+  String error1, error2, error3, error4, error5;
 
   Future<void> chooseImage() async {
       var choosedimage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -55,6 +56,7 @@ class _FoodFormState extends State<FoodForm> {
   Database db = Database();
   FoodItem item = FoodItem();
   bool spinner = false;
+  final _key =GlobalKey<FormState>();
   
   @override
   Widget build(BuildContext context) {
@@ -76,16 +78,17 @@ class _FoodFormState extends State<FoodForm> {
       body: ModalProgressHUD(
         inAsyncCall: spinner,
         child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height * 2,
-            width: MediaQuery.of(context).size.width,
+          child: Form(
+            key: _key,
+            //height: MediaQuery.of(context).size.height * 2,
+            //width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(top: 0, bottom: 0,left: 15),
                     child: Text(
                       "Add A Food Item",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.white),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.black),
                     ),
                   ),
                 Container(
@@ -93,10 +96,14 @@ class _FoodFormState extends State<FoodForm> {
                   padding: EdgeInsets.only(left: 20,right: 20,top: 30),
                   child: Column(
                     children: <Widget>[
-                      TextField(
+                      TextFormField(
                         onChanged: (name){
                           //user.setEmail(email);
                           item.foodName = name;
+                          var error = item.isNameValid();
+                          setState(() {
+                            error1 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -105,7 +112,7 @@ class _FoodFormState extends State<FoodForm> {
                                 )
                             ),
                             labelText: "Food Item Name",
-                            //errorText: item.isCatNaneValid() ? "" : "Invalid username",
+                            errorText: error1,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -113,12 +120,17 @@ class _FoodFormState extends State<FoodForm> {
                         ),
                       ),
                       SizedBox(height:20.0),
-                      TextField(
+                      TextFormField(
                         onChanged: (desc){
                           //item.ssetPassword(Password);
                           item.foodDesc = desc;
+                          var error = item.isDescValid();
+                          setState(() {
+                            error2 = error;
+                          });
                         },
                         decoration: InputDecoration(
+                          errorText: error2,
                             focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Colors.pink
@@ -132,10 +144,14 @@ class _FoodFormState extends State<FoodForm> {
                         ),
                       ),
                       SizedBox(height:20.0),
-                      TextField(
+                      TextFormField(
                         onChanged: (foodPrice){
                           //item.ssetPassword(Password);
                           item.foodPrice = foodPrice;
+                          var error = item.foodPriceValid();
+                          setState(() {
+                            error3 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -144,6 +160,7 @@ class _FoodFormState extends State<FoodForm> {
                                 )
                             ),
                             labelText: "Food Price",
+                            errorText: error3,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -155,6 +172,10 @@ class _FoodFormState extends State<FoodForm> {
                         onChanged: (discPrice){
                           //item.ssetPassword(Password);
                           item.discPrice = discPrice;
+                          var error = item.discPriceValid();
+                          setState(() {
+                            error4 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -162,7 +183,8 @@ class _FoodFormState extends State<FoodForm> {
                                     color: Colors.pink
                                 )
                             ),
-                            labelText: "Descount",
+                            labelText: "Discount",
+                            errorText: error4,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -174,7 +196,10 @@ class _FoodFormState extends State<FoodForm> {
                         onChanged: (catName){
                           //item.ssetPassword(Password);
                           item.catName = catName;
-                          print(item.catName);
+                          var error = item.isCategoryValid();
+                          setState(() {
+                            error5 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -183,6 +208,7 @@ class _FoodFormState extends State<FoodForm> {
                                 )
                             ),
                             labelText: "Category Name",
+                            errorText: error5,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -195,7 +221,7 @@ class _FoodFormState extends State<FoodForm> {
                           chooseImage();
                         },
                         child: Container(
-                          margin: EdgeInsets.only(top: 80),
+                          //margin: EdgeInsets.only(top: 80),
                           width: MediaQuery.of(context).size.width,
                           height: 70,
                           child: Card(
@@ -256,7 +282,7 @@ class _FoodFormState extends State<FoodForm> {
                                spinner=false;
                              });
                              String print = await db.createFood();
-                             showAlertDialog(context, print);
+                             //showAlertDialog(context, print);
                              Navigator.pushReplacement(
                                context,
                                MaterialPageRoute(
@@ -264,9 +290,9 @@ class _FoodFormState extends State<FoodForm> {
                                ));
                             }
                         },
-                        child: uploadimage == null? 
-                        Container() :
-                        Container(
+                        child: uploadimage == null || item.foodName == "" || item.foodDesc == "" || item.foodPrice == "" || item.discPrice == "" || item.catName == ""? Container()
+                        : Container(
+                          
                           margin: EdgeInsets.only(top: 80),
                           width: MediaQuery.of(context).size.width,
                           height: 70,
@@ -276,7 +302,7 @@ class _FoodFormState extends State<FoodForm> {
                                 borderRadius: BorderRadius.circular(20)
                             ),
                             color:   Color.fromRGBO(244, 75, 89, 1),
-                            margin: EdgeInsets.only(top: 20),
+                            //margin: EdgeInsets.only(top: 20),
                             child: Center(
                                 child: Text(
                                   "ADD",

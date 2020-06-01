@@ -25,7 +25,7 @@ class OrderButton extends StatelessWidget {
             ],
           ),
           onPressed: () => {
-            //Navigator.pushNamed(context, '/cart')
+            Navigator.pushNamed(context, '/categoryList')
           }),
     );
   }

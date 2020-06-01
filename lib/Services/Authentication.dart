@@ -156,6 +156,15 @@ class Database{
           }
       );
       return response.body;
+  }
+
+  Future<String> deleteFood(String id)async{
+      http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/DeleteFood.php",
+          body: {
+            "f_id": id
+          }
+      );
+      return response.body;
   } 
 
   Future<bool> getCat()async{

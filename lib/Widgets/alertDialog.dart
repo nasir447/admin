@@ -53,3 +53,30 @@ void logoutAlertDialog(BuildContext context) {
     },
   );
 }
+
+sucessDialog(BuildContext context,String sms) {
+
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+      //Navigator.pop(context);
+    },
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text("Success!!"),
+    content: Text("$sms"),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}

@@ -9,7 +9,6 @@ import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:Admin/Screens/Category.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:Admin/Screens/pr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +23,7 @@ class _CategoryFormState extends State<CategoryForm> {
 
   File uploadimage;
   List<int> imageBytes;
+  String error1, error2;
 
   Future<void> chooseImage() async {
       var choosedimage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -56,6 +56,7 @@ class _CategoryFormState extends State<CategoryForm> {
   Database db = Database();
   ItemCategory item = ItemCategory();
   bool spinner = false;
+  final _key =GlobalKey<FormState>();
   
   @override
   Widget build(BuildContext context) {
@@ -77,16 +78,17 @@ class _CategoryFormState extends State<CategoryForm> {
       body: ModalProgressHUD(
         inAsyncCall: spinner,
         child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+          child: Form(
+            key: _key,
+            //height: MediaQuery.of(context).size.height,
+            //width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(top: 0, bottom: 0,left: 15),
                     child: Text(
                       "Add A Category",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.white),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.black),
                     ),
                   ),
                 Container(
@@ -94,10 +96,14 @@ class _CategoryFormState extends State<CategoryForm> {
                   padding: EdgeInsets.only(left: 20,right: 20,top: 30),
                   child: Column(
                     children: <Widget>[
-                      TextField(
+                      TextFormField(
                         onChanged: (name){
                           //user.setEmail(email);
                           item.catName = name;
+                          var error = item.isCategoryValid();
+                          setState(() {
+                            error1 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -106,7 +112,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                 )
                             ),
                             labelText: "Category Name",
-                            //errorText: item.isCatNaneValid() ? "" : "Invalid username",
+                            errorText: error1,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -114,10 +120,14 @@ class _CategoryFormState extends State<CategoryForm> {
                         ),
                       ),
                       SizedBox(height:20.0),
-                      TextField(
+                      TextFormField(
                         onChanged: (desc){
                           //item.ssetPassword(Password);
                           item.catDesc = desc;
+                          var error = item.isCategoryDiscValid();
+                          setState(() {
+                            error2 = error;
+                          });
                         },
                         decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
@@ -126,6 +136,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                 )
                             ),
                             labelText: "Discription",
+                            errorText: error2,
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -147,7 +158,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                 borderRadius: BorderRadius.circular(20)
                             ),
                             color:   Color.fromRGBO(244, 75, 89, 1),
-                            margin: EdgeInsets.only(top: 20),
+                            //margin: EdgeInsets.only(top: 20),
                             child: Center(
                                 child: Text(
                                   "CHOOSE IMAGE",
@@ -175,6 +186,12 @@ class _CategoryFormState extends State<CategoryForm> {
                           setState(() {
                             spinner = true;
                           });
+                          if(item.catName == ""){
+                          showAlertDialog(context, "Catecory Nzme is requires");
+                         }
+                          else if(item.catDesc == ""){
+                            showAlertDialog(context, "Category discription is empty");
+                          }
                          db.setCategory(item.catName, item.catDesc, item.image);
                          setState(() {
                            spinner = false;
@@ -193,7 +210,6 @@ class _CategoryFormState extends State<CategoryForm> {
                                spinner=false;
                              });
                              dynamic print = await db.createCategory();
-                             showAlertDialog(context, print);
                              Navigator.pushReplacement(
                                context,
                                MaterialPageRoute(
@@ -201,7 +217,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                ));
                             }
                         },
-                        child: uploadimage == null? 
+                        child: uploadimage == null || item.catName == "" || item.catDesc == "" ? 
                         Container() :
                         Container(
                           margin: EdgeInsets.only(top: 80),
@@ -213,7 +229,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                 borderRadius: BorderRadius.circular(20)
                             ),
                             color:   Color.fromRGBO(244, 75, 89, 1),
-                            margin: EdgeInsets.only(top: 20),
+                            //margin: EdgeInsets.only(top: 20),
                             child: Center(
                                 child: Text(
                                   "ADD",

@@ -12,7 +12,9 @@ void main() => runApp(Admin());
 class Admin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Authentication(),
       routes: {
         '/home': (context) => Home(),

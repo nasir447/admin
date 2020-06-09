@@ -60,19 +60,21 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 120.0),
-            MenuButton(),
-            SizedBox(height: 30.0),
-            AddCategory(),
-            SizedBox(height: 30.0),
-            AddFoodButton(),
-          ],
-        )
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 120.0),
+              MenuButton(),
+              SizedBox(height: 30.0),
+              AddCategory(),
+              SizedBox(height: 30.0),
+              AddFoodButton(),
+            ],
+          )
+        ),
       ),
       bottomNavigationBar: BottomNavBarWidget(),
     );

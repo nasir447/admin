@@ -73,11 +73,10 @@ class _OrderDisplayState extends State<OrderDisplay> {
             SizedBox(height: 10.0),
             Divider(color: Colors.pink),
             SizedBox(height: 10.0),
-            FutureBuilder<List>(
+            FutureBuilder(
                 future: foodItem,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
-                      print(snapshot.data.length.toString()+"*");
                   if(!snapshot.hasData)
                     return Center(child: CircularProgressIndicator(),);
                   if(snapshot.hasData){
@@ -86,10 +85,11 @@ class _OrderDisplayState extends State<OrderDisplay> {
                     return ListView.builder(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data.length==null?0:snapshot.data.length,
                         itemBuilder: (context,index){
                           return Column(
                             children: <Widget>[
+
                               Container(
                                 height: 50,
                                 padding: const EdgeInsets.all(8.0),

@@ -30,6 +30,8 @@ class _OrderState extends State<Order> {
    String result =  await db.getOrder(status);
    var data = jsonDecode(result);
    List<OrderClass> temp=List();
+   if(data==0)
+     return temp;
    for(var i in data){
      if(i["status"] == status){
        temp.add(
@@ -48,16 +50,25 @@ class _OrderState extends State<Order> {
 
   @override
   void initState() {
-    pending = fillList("pending");
-    //accepted = fillList("on the way");
-    //delivered = fillList("delivered");
-    //cancelled = fillList("cancel");
+    try {
+      print("hello");
+      pending = fillList("pending");
+      print("hello");
+      accepted = fillList("on the way");
+      print("hello");
+      delivered = fillList("delivered");
+      print("hello");
+      cancelled = fillList("cancel");
+      print("hello");
+    }catch(e){
+      print(e.toString());
+    }
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 1,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           iconTheme: new IconThemeData(color: Color.fromRGBO(244, 75, 89, 1)),
@@ -80,7 +91,7 @@ class _OrderState extends State<Order> {
                   ),
                 ),
                 ),
-               /* Tab(child: Text(
+               Tab(child: Text(
                   "Accepted",
                   style: TextStyle(
                       color: Colors.black
@@ -100,7 +111,7 @@ class _OrderState extends State<Order> {
                       color: Colors.black
                   ),
                 ),
-                ),*/
+                ),
               ],
           ),
         ),
@@ -161,7 +172,7 @@ class _OrderState extends State<Order> {
                   }
                 }
             ),
-            /*FutureBuilder(
+            FutureBuilder(
                 future: accepted,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
@@ -192,8 +203,8 @@ class _OrderState extends State<Order> {
                                       showAlertDialog(context, "There was problem while gettin order records");
                                     }
 
-                                    if(customer != null && foodItem != null){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
+                                    if(customer != null ){
+                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, /*food: foodItem,*/ orderclass: snapshot.data[index]);
                                       print(orderdisplay.customer.username);
                                       //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
                                     }
@@ -241,8 +252,8 @@ class _OrderState extends State<Order> {
                                       showAlertDialog(context, "There was problem while gettin order records");
                                     }
 
-                                    if(customer != null && foodItem != null){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
+                                    if(customer != null ){
+                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer,/* food: foodItem,*/ orderclass: snapshot.data[index]);
                                       print(orderdisplay.customer.username);
                                       //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
                                     }
@@ -290,8 +301,8 @@ class _OrderState extends State<Order> {
                                       showAlertDialog(context, "There was problem while gettin order records");
                                     }
 
-                                    if(customer != null && foodItem != null){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
+                                    if(customer != null ){
+                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, /*food: foodItem,*/ orderclass: snapshot.data[index]);
                                       print(orderdisplay.customer.username);
                                       //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
                                     }
@@ -307,7 +318,7 @@ class _OrderState extends State<Order> {
                         });
                   }
                 }
-            ),*/
+            ),
           ],
         )
       ),

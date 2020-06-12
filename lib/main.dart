@@ -3,6 +3,7 @@ import 'package:Admin/Screens/CategoryDisplay.dart';
 import 'package:Admin/Screens/CategoryForms.dart';
 import 'package:Admin/Screens/FoodForm.dart';
 import 'package:Admin/Screens/Home.dart';
+import 'package:Admin/Screens/Order.dart';
 import 'package:Admin/Screens/SignIn.dart';
 import 'package:Admin/Screens/authenticate.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class Admin extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Authentication(),
+      home: Order(),
       routes: {
         '/home': (context) => Home(),
         '/foodform': (context) => FoodForm(),

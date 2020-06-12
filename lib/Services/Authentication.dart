@@ -189,4 +189,36 @@ class Database{
       }
       //return true;
   }
+
+  Future<String> getOrder(String status)async{
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/getOrdersForAdmin.php",
+        body: {
+          "status" : status
+        }
+    );
+    return response.body;
+  }
+
+  Future<String> getCustomer(String customerID)async{
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/getCustomer.php",
+        body: {
+          "cid" : customerID
+        }
+    );
+    return response.body;
+  }
+
+  Future<String> getFood(String orderID)async{
+    //print("iskay baad " + orderID);
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/getFood.php",
+        body: {
+          "oid" : orderID
+        }
+    );
+    print(response.body);
+    return response.body;
+  }
 }

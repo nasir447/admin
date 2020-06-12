@@ -9,8 +9,10 @@ class FoodItem{
   String discPrice;
   List<int> foodbytes;
   String catName;
+  String quantity;
+  String price;
 
-  FoodItem({this.foodID, this.foodName, this.foodDesc, this.foodimage, this.foodPrice, this.discPrice});
+  FoodItem({this.foodID, this.foodName, this.foodDesc, this.foodimage, this.foodPrice, this.discPrice, this.catName, this.price, this.quantity});
 
   void fName(String name){
     this.foodName = name;

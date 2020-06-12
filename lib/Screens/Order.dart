@@ -25,20 +25,6 @@ class _OrderState extends State<Order> {
   Future<List<OrderClass>> delivered;
   Future<List<OrderClass>> cancelled;
   Customer customer;
-  Future<List> foodItem;
-
-  Future<List> getMenu(String orderID) async {
-    var response = await db.getFood(orderID);
-    var data = jsonDecode(response);
-    List<FoodItem> listFood = List();
-    for (var i in data) {
-      FoodItem food = FoodItem(foodID: i["f_id"], foodName: i["f_name"], foodDesc: i["ingredients"], foodPrice: i["f_price"], discPrice: i["d_price"], catName: i["d_price"], quantity: i["quantity"], price: i["price"]);
-      print(food.quantity);
-      food.func();
-      listFood.add(food);
-    }
-    return listFood;
-  }
 
   Future<List<OrderClass>> fillList(String status)async{
    String result =  await db.getOrder(status);
@@ -63,12 +49,15 @@ class _OrderState extends State<Order> {
   @override
   void initState() {
     pending = fillList("pending");
+    //accepted = fillList("on the way");
+    //delivered = fillList("delivered");
+    //cancelled = fillList("cancel");
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
           iconTheme: new IconThemeData(color: Color.fromRGBO(244, 75, 89, 1)),
@@ -91,7 +80,7 @@ class _OrderState extends State<Order> {
                   ),
                 ),
                 ),
-                Tab(child: Text(
+               /* Tab(child: Text(
                   "Accepted",
                   style: TextStyle(
                       color: Colors.black
@@ -111,14 +100,14 @@ class _OrderState extends State<Order> {
                       color: Colors.black
                   ),
                 ),
-                ),
+                ),*/
               ],
           ),
         ),
         body: TabBarView(
           children: <Widget>[
             FutureBuilder(
-                future: pending = fillList("pending"),
+                future: pending,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -147,17 +136,17 @@ class _OrderState extends State<Order> {
                                       print(e.toString());
                                     }
 
-                                    try{
+                                    /*try{
                                       foodItem = getMenu(snapshot.data[index].orderID);
                                     }catch(e){
                                       showAlertDialog(context, "There was problem while gettin order records");
-                                    }
+                                    }*/
 
-                                    if(customer != null && foodItem != null){
-                                      print(customer.username);
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
-                                      print(orderdisplay.customer.username);
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
+                                    if(customer != null){
+                                      //print(customer.username);
+                                      //OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
+                                      //print(orderdisplay.customer.username);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
                                     }
                                   },
                                   title: Text("Order#"+snapshot.data[index].orderID),
@@ -172,8 +161,8 @@ class _OrderState extends State<Order> {
                   }
                 }
             ),
-            FutureBuilder(
-                future: accepted = fillList("on the way"),
+            /*FutureBuilder(
+                future: accepted,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -222,7 +211,7 @@ class _OrderState extends State<Order> {
                 }
             ),
             FutureBuilder(
-                future: delivered = fillList("delivered"),
+                future: delivered,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -271,7 +260,7 @@ class _OrderState extends State<Order> {
                 }
             ),
             FutureBuilder(
-                future: cancelled = fillList("cancel"),
+                future: cancelled,
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -318,7 +307,7 @@ class _OrderState extends State<Order> {
                         });
                   }
                 }
-            ),
+            ),*/
           ],
         )
       ),

@@ -61,10 +61,11 @@ class _CategoryFormState extends State<CategoryForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
         elevation: 0,
-        iconTheme: new IconThemeData(color:Colors.white,),
-        backgroundColor:  Colors.white,
+        iconTheme: new IconThemeData(color:Colors.black,),
         centerTitle: true,
         title: Text(
           "Add A New Category",
@@ -88,7 +89,7 @@ class _CategoryFormState extends State<CategoryForm> {
                   padding: EdgeInsets.only(top: 0, bottom: 0,left: 15),
                     child: Text(
                       "Add A Category",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.black),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.black),
                     ),
                   ),
                 Container(
@@ -194,7 +195,7 @@ class _CategoryFormState extends State<CategoryForm> {
                           }
                          db.setCategory(item.catName, item.catDesc, item.image);
                          setState(() {
-                           spinner = false;
+                           //spinner = false;
                          });
                         
                          String result = await db.checkCat();

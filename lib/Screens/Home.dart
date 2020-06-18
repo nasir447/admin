@@ -5,6 +5,7 @@ import 'package:Admin/Widgets/MenuButton.dart';
 import 'package:Admin/Widgets/OrderButton.dart';
 import 'package:Admin/Widgets/RiderButton.dart';
 import 'package:Admin/Widgets/Update.dart';
+import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:Admin/Widgets/manageOrderButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,7 +35,7 @@ class _HomeState extends State<Home> {
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.arrow_back), onPressed: null),
+          IconButton(icon: Icon(Icons.exit_to_app), onPressed: () => logoutAlertDialog(context)),
         ],
       ),
       drawer: Drawer(
@@ -60,7 +61,7 @@ class _HomeState extends State<Home> {
               
               ListTile(
                 onTap: () async{
-                  //logoutAlertDialog(context);
+                  logoutAlertDialog(context);
                 },
                 trailing: Icon(Icons.cancel, color: Colors.red,),
                 title: Text("Logout"),
@@ -92,7 +93,7 @@ class _HomeState extends State<Home> {
           )
         ),
       ),
-      bottomNavigationBar: BottomNavBarWidget(),
+      //bottomNavigationBar: BottomNavBarWidget(),
     );
   }
 }

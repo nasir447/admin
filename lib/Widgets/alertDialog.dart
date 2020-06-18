@@ -36,14 +36,14 @@ void logoutAlertDialog(BuildContext context) {
         content:  Text("Are you sure you want to logout?"),
         actions: <Widget>[
            FlatButton(
-            child:  Text("Logout"),
+            child:  Text("Yes"),
             onPressed: () {
               Navigator.pop(context);
               Navigator.pushReplacementNamed(context, "/");
             },
           ),
           FlatButton(
-            child:  Text("okay"),
+            child:  Text("No"),
             onPressed: () {
               Navigator.of(context).pop();
             },

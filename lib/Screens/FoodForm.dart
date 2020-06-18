@@ -21,7 +21,14 @@ class _FoodFormState extends State<FoodForm> {
 
   File uploadimage;
   List<int> imageBytes;
-  String error1, error2, error3, error4, error5;
+  String error1 = "", error2 = "", error3 = "", error4 = "", error5 = "";
+
+  bool everythingOK(){
+    if(error1 != "" || error2 != "" || error3 != "" ||error4 != "" || error5 != ""){
+      return false;
+    }
+    return true;
+  }
 
   Future<void> chooseImage() async {
       var choosedimage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -61,10 +68,11 @@ class _FoodFormState extends State<FoodForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
         elevation: 0,
-        iconTheme: new IconThemeData(color:Colors.white,),
-        backgroundColor:  Colors.white,
+        iconTheme: new IconThemeData(color:Colors.black,),
         centerTitle: true,
         title: Text(
           "Add A New food Item",
@@ -88,7 +96,7 @@ class _FoodFormState extends State<FoodForm> {
                   padding: EdgeInsets.only(top: 0, bottom: 0,left: 15),
                     child: Text(
                       "Add A Food Item",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50,color: Colors.black),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.black),
                     ),
                   ),
                 Container(
@@ -259,37 +267,43 @@ class _FoodFormState extends State<FoodForm> {
                             spinner = true;
                           });
                           item.discPrice = "0";
-                         db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.catName, item.foodimage);
-                         setState(() {
-                           spinner = false;
-                         });
-                        
-                         var result = await db.getCat();
-                          if(result ==false){
+                          var check = everythingOK();
+                          if(check){
+                            db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.catName, item.foodimage);
                             setState(() {
-                              spinner=false;
+                              //spinner = false;
                             });
-                            await showAlertDialog(context,"Category Doesent Exist");
-                            /*Navigator.pushReplacement(
-                               context,
-                               MaterialPageRoute(
-                                 builder: (context) =>(Category())
-                               ));*/
-                            //Navigator.pop(context);
+                            
+                            var result = await db.getCat();
+                              if(result ==false){
+                                setState(() {
+                                  spinner=false;
+                                });
+                                await showAlertDialog(context,"Category Doesent Exist");
+                                /*Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>(Category())
+                                  ));*/
+                                //Navigator.pop(context);
 
+                              }
+                              else if(result == true){ 
+                                
+                                String print = await db.createFood();
+                                //showAlertDialog(context, print);
+                                setState(() {
+                                  spinner=false;
+                                });
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>(Category())
+                                  ));
+                                }
+                          }else{
+                            showAlertDialog(context, "Enter all feilds");
                           }
-                          else if(result == true){ 
-                             setState(() {
-                               spinner=false;
-                             });
-                             String print = await db.createFood();
-                             //showAlertDialog(context, print);
-                             Navigator.pushReplacement(
-                               context,
-                               MaterialPageRoute(
-                                 builder: (context) =>(Category())
-                               ));
-                            }
                         },
                         child: uploadimage == null || item.foodName == "" || item.foodDesc == "" || item.foodPrice == "" || item.discPrice == "" || item.catName == ""? Container()
                         : Container(

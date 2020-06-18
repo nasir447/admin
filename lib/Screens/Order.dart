@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Admin/Services/Authentication.dart';
 import 'package:Admin/Classes/OrderClass.dart';
-
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../Classes/FoodItem.dart';
 import '../Classes/FoodItem.dart';
 import '../Widgets/alertDialog.dart';
@@ -25,7 +25,8 @@ class _OrderState extends State<Order> {
   Future<List<OrderClass>> delivered;
   Future<List<OrderClass>> cancelled;
   Customer customer;
-
+  bool spinner = false;
+ 
   Future<List<OrderClass>> fillList(String status)async{
    String result =  await db.getOrder(status);
    var data = jsonDecode(result);
@@ -107,175 +108,208 @@ class _OrderState extends State<Order> {
               ],
           ),
         ),
-        body: TabBarView(
-          children: <Widget>[
-            FutureBuilder(
-                future: pending = fillList("pending"),
-                builder: (BuildContext context,
-                    AsyncSnapshot snapshot) {
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
-                  if(snapshot.hasData){
-                    if(snapshot.data.length==0)
-                      return Center(child: Text("No orders yet!"));
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context,index){
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  onTap: () async {
-                                    try{
-                                      var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      String name = jsonDecode(result)['username'];
-                                      String phone = jsonDecode(result)['phone'];
-                                      customer = Customer(username: name, phone: phone);
-                                    }catch(e){
-                                      print(e.toString());
-                                    }
+        body: ModalProgressHUD(
+            inAsyncCall: spinner,
+            child: TabBarView(
+            children: <Widget>[
+              FutureBuilder(
+                  future: pending = fillList("pending"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot snapshot) {
+                    if(!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator(),);
+                    if(snapshot.hasData){
+                      if(snapshot.data.length==0)
+                        return Center(child: Text("No orders yet!"));
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context,index){
+                            return Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      setState(() {
+                                        spinner = true;
+                                      });
+                                      try{
+                                        var result = await db.getCustomer(snapshot.data[index].customerID);
+                                        String name = jsonDecode(result)['username'];
+                                        String phone = jsonDecode(result)['phone'];
+                                        customer = Customer(username: name, phone: phone);
+                                      }catch(e){
+                                        print(e.toString());
+                                      }
 
-                                    if(customer != null){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
-                                    }
-                                  },
-                                  title: Text("Order# "+snapshot.data[index].orderID),
-                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
-                                  trailing: Text("Status: \n"+snapshot.data[index].status),
-                                ),
-                              ),
-                              Divider(color: Colors.pink,)
-                            ],
-                          );
-                        });
-                  }
-                }
-            ),
-            FutureBuilder(
-                future: accepted = fillList("on the way"),
-                builder: (BuildContext context,
-                    AsyncSnapshot snapshot) {
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
-                  if(snapshot.hasData){
-                    if(snapshot.data.length==0)
-                      return Center(child: Text("No Past orders yet!"));
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context,index){
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  onTap: () async {
-                                    try{
-                                      var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin customer records");
-                                    }
+                                      setState(() {
+                                        spinner = false;
+                                      });
 
-                                    if(customer != null ){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
-                                    }
-                                  },
-                                  title: Text("Order#"+snapshot.data[index].orderID),
-                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
-                                  trailing: Text("Status\n"+snapshot.data[index].status),
+                                      if(customer != null){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
+                                      }
+                                    },
+                                    title: Text("Order# "+snapshot.data[index].orderID),
+                                    subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
+                                    trailing: Text("Status: \n"+snapshot.data[index].status),
+                                  ),
                                 ),
-                              ),
-                              Divider(color: Colors.pink,)
-                            ],
-                          );
-                        });
+                                Divider(color: Colors.pink,)
+                              ],
+                            );
+                          });
+                    }
                   }
-                }
-            ),
-            FutureBuilder(
-                future: delivered = fillList("delivered"),
-                builder: (BuildContext context,
-                    AsyncSnapshot snapshot) {
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
-                  if(snapshot.hasData){
-                    if(snapshot.data.length==0)
-                      return Center(child: Text("No Past orders yet!"));
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context,index){
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  onTap: () async {
-                                    try{
-                                      var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin customer records");
-                                    }
+              ),
+              FutureBuilder(
+                  future: accepted = fillList("on the way"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot snapshot) {
+                    if(!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator(),);
+                    if(snapshot.hasData){
+                      if(snapshot.data.length==0)
+                        return Center(child: Text("No Past orders yet!"));
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context,index){
+                            return Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(
+                                    onTap: () async {
 
-                                    if(customer != null ){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
-                                    }
-                                  },
-                                  title: Text("Order#"+snapshot.data[index].orderID),
-                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
-                                  trailing: Text("Status\n"+snapshot.data[index].status),
-                                ),
-                              ),
-                              Divider(color: Colors.pink,)
-                            ],
-                          );
-                        });
-                  }
-                }
-            ),
-            FutureBuilder(
-                future: cancelled = fillList("cancelled"),
-                builder: (BuildContext context,
-                    AsyncSnapshot snapshot) {
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
-                  if(snapshot.hasData){
-                    if(snapshot.data.length==0)
-                      return Center(child: Text("No Past orders yet!"));
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context,index){
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  onTap: () async {
-                                    try{
-                                      var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin customer records");
-                                    }
+                                      setState(() {
+                                        spinner = true;
+                                      });
 
-                                    if(customer != null ){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
-                                    }
-                                  },
-                                  title: Text("Order#"+snapshot.data[index].orderID),
-                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
-                                  trailing: Text("Status\n"+snapshot.data[index].status),
+                                      try{
+                                        var result = await db.getCustomer(snapshot.data[index].customerID);
+                                        customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
+                                      }catch(e){
+                                        showAlertDialog(context, "There was problem while gettin customer records");
+                                      }
+
+                                      setState(() {
+                                        spinner = false;
+                                      });
+
+                                      if(customer != null ){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
+                                      }
+                                    },
+                                    title: Text("Order#"+snapshot.data[index].orderID),
+                                    subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
+                                    trailing: Text("Status\n"+snapshot.data[index].status),
+                                  ),
                                 ),
-                              ),
-                              Divider(color: Colors.pink,)
-                            ],
-                          );
-                        });
+                                Divider(color: Colors.pink,)
+                              ],
+                            );
+                          });
+                    }
                   }
-                }
-            ),
-          ],
+              ),
+              FutureBuilder(
+                  future: delivered = fillList("delivered"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot snapshot) {
+                    if(!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator(),);
+                    if(snapshot.hasData){
+                      if(snapshot.data.length==0)
+                        return Center(child: Text("No Past orders yet!"));
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context,index){
+                            return Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      setState(() {
+                                        spinner = true;
+                                      });
+                                      try{
+                                        var result = await db.getCustomer(snapshot.data[index].customerID);
+                                        customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
+                                      }catch(e){
+                                        showAlertDialog(context, "There was problem while gettin customer records");
+                                      }
+
+                                      setState(() {
+                                        spinner = false;
+                                      });
+
+                                      if(customer != null ){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
+                                      }
+                                    },
+                                    title: Text("Order#"+snapshot.data[index].orderID),
+                                    subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
+                                    trailing: Text("Status\n"+snapshot.data[index].status),
+                                  ),
+                                ),
+                                Divider(color: Colors.pink,)
+                              ],
+                            );
+                          });
+                    }
+                  }
+              ),
+              FutureBuilder(
+                  future: cancelled = fillList("cancelled"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot snapshot) {
+                    if(!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator(),);
+                    if(snapshot.hasData){
+                      if(snapshot.data.length==0)
+                        return Center(child: Text("No Past orders yet!"));
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context,index){
+                            return Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      setState(() {
+                                        spinner = true;
+                                      });
+                                      try{
+                                        var result = await db.getCustomer(snapshot.data[index].customerID);
+                                        customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
+                                      }catch(e){
+                                        showAlertDialog(context, "There was problem while gettin customer records");
+                                      }
+
+                                      setState(() {
+                                        spinner = false;
+                                      });
+
+                                      if(customer != null ){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
+                                      }
+                                    },
+                                    title: Text("Order#"+snapshot.data[index].orderID),
+                                    subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
+                                    trailing: Text("Status\n"+snapshot.data[index].status),
+                                  ),
+                                ),
+                                Divider(color: Colors.pink,)
+                              ],
+                            );
+                          });
+                    }
+                  }
+              ),
+            ],
+          ),
         )
       ),
     );

@@ -168,7 +168,7 @@ class _FoodFormState extends State<FoodForm> {
                         ),
                       ),
                       SizedBox(height:20.0),
-                      TextField(
+                      /*TextField(
                         onChanged: (discPrice){
                           //item.ssetPassword(Password);
                           item.discPrice = discPrice;
@@ -190,8 +190,8 @@ class _FoodFormState extends State<FoodForm> {
                               fontWeight: FontWeight.bold,
                             )
                         ),
-                      ),
-                      SizedBox(height:20.0),
+                      ),*/
+                      //SizedBox(height:20.0),
                       TextField(
                         onChanged: (catName){
                           //item.ssetPassword(Password);
@@ -258,6 +258,7 @@ class _FoodFormState extends State<FoodForm> {
                           setState(() {
                             spinner = true;
                           });
+                          item.discPrice = "0";
                          db.setFoodItem(item.foodName, item.foodDesc, item.foodPrice, item.discPrice, item.catName, item.foodimage);
                          setState(() {
                            spinner = false;

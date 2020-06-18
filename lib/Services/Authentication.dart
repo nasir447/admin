@@ -222,4 +222,28 @@ class Database{
     print(response.body);
     return response.body;
   }
+
+  Future<String> statusAccept(String orderID)async{
+    //print("iskay baad " + orderID);
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/statusAccept.php",
+        body: {
+          "id" : orderID
+        }
+    );
+    print(response.body);
+    return response.body;
+  }
+
+  Future<String> statusReject(String orderID)async{
+    //print("iskay baad " + orderID);
+    http.Response response = await http.post(
+        "https://vibrant-millions.000webhostapp.com/statusCancel.php",
+        body: {
+          "id" : orderID
+        }
+    );
+    print(response.body);
+    return response.body;
+  }
 }

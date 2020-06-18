@@ -51,15 +51,7 @@ class _OrderState extends State<Order> {
   @override
   void initState() {
     try {
-      print("hello");
       pending = fillList("pending");
-      print("hello");
-      accepted = fillList("on the way");
-      print("hello");
-      delivered = fillList("delivered");
-      print("hello");
-      cancelled = fillList("cancel");
-      print("hello");
     }catch(e){
       print(e.toString());
     }
@@ -118,7 +110,7 @@ class _OrderState extends State<Order> {
         body: TabBarView(
           children: <Widget>[
             FutureBuilder(
-                future: pending,
+                future: pending = fillList("pending"),
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -137,26 +129,55 @@ class _OrderState extends State<Order> {
                                   onTap: () async {
                                     try{
                                       var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      print(result);
-                                      //customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
                                       String name = jsonDecode(result)['username'];
                                       String phone = jsonDecode(result)['phone'];
-                                      print(name);
                                       customer = Customer(username: name, phone: phone);
                                     }catch(e){
                                       print(e.toString());
                                     }
 
-                                    /*try{
-                                      foodItem = getMenu(snapshot.data[index].orderID);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin order records");
-                                    }*/
-
                                     if(customer != null){
-                                      //print(customer.username);
-                                      //OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, food: foodItem, orderclass: snapshot.data[index]);
-                                      //print(orderdisplay.customer.username);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
+                                    }
+                                  },
+                                  title: Text("Order# "+snapshot.data[index].orderID),
+                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
+                                  trailing: Text("Status: \n"+snapshot.data[index].status),
+                                ),
+                              ),
+                              Divider(color: Colors.pink,)
+                            ],
+                          );
+                        });
+                  }
+                }
+            ),
+            FutureBuilder(
+                future: accepted = fillList("on the way"),
+                builder: (BuildContext context,
+                    AsyncSnapshot snapshot) {
+                  if(!snapshot.hasData)
+                    return Center(child: CircularProgressIndicator(),);
+                  if(snapshot.hasData){
+                    if(snapshot.data.length==0)
+                      return Center(child: Text("No Past orders yet!"));
+                    return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context,index){
+                          return Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  onTap: () async {
+                                    try{
+                                      var result = await db.getCustomer(snapshot.data[index].customerID);
+                                      customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
+                                    }catch(e){
+                                      showAlertDialog(context, "There was problem while gettin customer records");
+                                    }
+
+                                    if(customer != null ){
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
                                     }
                                   },
@@ -173,7 +194,7 @@ class _OrderState extends State<Order> {
                 }
             ),
             FutureBuilder(
-                future: accepted,
+                future: delivered = fillList("delivered"),
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -197,16 +218,8 @@ class _OrderState extends State<Order> {
                                       showAlertDialog(context, "There was problem while gettin customer records");
                                     }
 
-                                    try{
-                                      //foodItem = getMenu(snapshot.data[index].orderID);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin order records");
-                                    }
-
                                     if(customer != null ){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, /*food: foodItem,*/ orderclass: snapshot.data[index]);
-                                      print(orderdisplay.customer.username);
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
                                     }
                                   },
                                   title: Text("Order#"+snapshot.data[index].orderID),
@@ -222,7 +235,7 @@ class _OrderState extends State<Order> {
                 }
             ),
             FutureBuilder(
-                future: delivered,
+                future: cancelled = fillList("cancelled"),
                 builder: (BuildContext context,
                     AsyncSnapshot snapshot) {
                   if(!snapshot.hasData)
@@ -246,65 +259,8 @@ class _OrderState extends State<Order> {
                                       showAlertDialog(context, "There was problem while gettin customer records");
                                     }
 
-                                    try{
-                                      //foodItem = getMenu(snapshot.data[index].orderID);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin order records");
-                                    }
-
                                     if(customer != null ){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer,/* food: foodItem,*/ orderclass: snapshot.data[index]);
-                                      print(orderdisplay.customer.username);
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
-                                    }
-                                  },
-                                  title: Text("Order#"+snapshot.data[index].orderID),
-                                  subtitle: Text("Bill: "+snapshot.data[index].bill+"\nDate: "+snapshot.data[index].date+"\nCustomer ID: "+snapshot.data[index].customerID+"\nAddress:"+snapshot.data[index].address),
-                                  trailing: Text("Status\n"+snapshot.data[index].status),
-                                ),
-                              ),
-                              Divider(color: Colors.pink,)
-                            ],
-                          );
-                        });
-                  }
-                }
-            ),
-            FutureBuilder(
-                future: cancelled,
-                builder: (BuildContext context,
-                    AsyncSnapshot snapshot) {
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
-                  if(snapshot.hasData){
-                    if(snapshot.data.length==0)
-                      return Center(child: Text("No Past orders yet!"));
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context,index){
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  onTap: () async {
-                                    try{
-                                      var result = await db.getCustomer(snapshot.data[index].customerID);
-                                      customer = Customer(username: jsonDecode(result)['username'], phone: jsonDecode(result)['phone']);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin customer records");
-                                    }
-
-                                    try{
-                                      //foodItem = getMenu(snapshot.data[index].orderID);
-                                    }catch(e){
-                                      showAlertDialog(context, "There was problem while gettin order records");
-                                    }
-
-                                    if(customer != null ){
-                                      OrderDisplayClass orderdisplay = OrderDisplayClass(customer: customer, /*food: foodItem,*/ orderclass: snapshot.data[index]);
-                                      print(orderdisplay.customer.username);
-                                      //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(orderdisplay: orderdisplay,)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDisplay(order: snapshot.data[index], customer: customer,)));
                                     }
                                   },
                                   title: Text("Order#"+snapshot.data[index].orderID),

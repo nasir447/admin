@@ -5,6 +5,7 @@ import 'package:Admin/Widgets/MenuButton.dart';
 import 'package:Admin/Widgets/OrderButton.dart';
 import 'package:Admin/Widgets/RiderButton.dart';
 import 'package:Admin/Widgets/Update.dart';
+import 'package:Admin/Widgets/manageOrderButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Admin/Classes/user.dart';
@@ -33,19 +34,7 @@ class _HomeState extends State<Home> {
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 10,
-            ),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-
-                });
-              },
-              child: MyCart(itemCount: 0),
-            ),
-          )
+          IconButton(icon: Icon(Icons.arrow_back), onPressed: null),
         ],
       ),
       drawer: Drawer(
@@ -53,6 +42,31 @@ class _HomeState extends State<Home> {
         child: ListView(
           children: <Widget>[
             DrawerHeader(
+              child: ListView(
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                accountName: Text(widget.user.getName(),
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                accountEmail: Text(widget.user.getEmail(),
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person),
+                ),
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO(244, 75, 89, 1)
+                ),
+              ),
+              
+              ListTile(
+                onTap: () async{
+                  //logoutAlertDialog(context);
+                },
+                trailing: Icon(Icons.cancel, color: Colors.red,),
+                title: Text("Logout"),
+              ),
+            ],
+          ),
               decoration: BoxDecoration(
                   color: Color.fromRGBO(244, 75, 89, 1)
               ),
@@ -72,6 +86,8 @@ class _HomeState extends State<Home> {
               AddCategory(),
               SizedBox(height: 30.0),
               AddFoodButton(),
+              SizedBox(height: 30.0),
+              ManageOrderButton(),
             ],
           )
         ),

@@ -8,6 +8,9 @@ import 'package:Admin/Screens/SignIn.dart';
 import 'package:Admin/Screens/authenticate.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/Order.dart';
+import 'Screens/authenticate.dart';
+
 void main() => runApp(Admin());
 
 class Admin extends StatelessWidget {
@@ -16,7 +19,7 @@ class Admin extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Order(),
+      home: Authentication(),
       routes: {
         '/home': (context) => Home(),
         '/foodform': (context) => FoodForm(),
@@ -24,6 +27,7 @@ class Admin extends StatelessWidget {
         '/login': (context) => Login(),
         '/category': (context) => CategoryForm(),
         '/categoryDisplay': (context) => CategoryDisplay(),
+        '/order': (context) => Order(),
       },
     );
   }

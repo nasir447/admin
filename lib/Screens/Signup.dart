@@ -186,7 +186,7 @@ class _SignUpState extends State<SignUp> {
                              setState(() {
                                spinner=false;
                              });
-                            Navigator.pushReplacementNamed(context, "/login");
+                            widget.toggleView();
                           }
                         },
                         child: Container(

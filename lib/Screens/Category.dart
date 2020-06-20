@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Admin/Classes/Cat.dart';
 import 'package:Admin/Classes/FoodItem.dart';
 import 'package:Admin/Screens/CategoryDisplay.dart';
+import 'package:Admin/Screens/foodPage.dart';
 import 'package:Admin/Services/Authentication.dart';
 import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _CategoryState extends State<Category> {
   bool isCategoryLoaded=false;
   String selectedMenu;
   String selectedCategory;
+  List<FoodItem> cart = List();
 
   @override
   initState(){
@@ -44,6 +46,23 @@ class _CategoryState extends State<Category> {
   void rebuild(){
     category = getCategory();
     menu = getMenu();
+  }
+
+  void addInCart(FoodItem food){
+      int flag = 0;
+      if(cart.length== 0 || cart==null){
+        cart.add(food);
+      }
+      else{
+        for(FoodItem i in cart){
+          if(i.foodName == food.foodName) {
+            i.incQuantity();
+            flag=1;
+          }
+        }
+        if(flag==0)
+        cart.add(food);
+      }
   }
 
   Future<List> getMenu() async {
@@ -70,7 +89,7 @@ class _CategoryState extends State<Category> {
   bool dealsClicked = false;
   
   Future<List<ItemCategory>> getCategory()async{
-    http.Response response= await db.getCategory();
+    http.Response response = await db.getCategory();
     var data = jsonDecode(response.body);
     print(data);
     List<ItemCategory> listCategory = List();
@@ -106,7 +125,10 @@ class _CategoryState extends State<Category> {
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
           ),
           actions: <Widget>[
-           
+           IconButton(icon: Icon(Icons.search,size: 30,), onPressed: (){
+               //addInCart();
+               showSearch(context: context, delegate: DataSearch(menu));
+            }),
           ],
         ),
         body: RefreshIndicator(
@@ -355,32 +377,117 @@ class _CategoryState extends State<Category> {
     );
   }
 }
-class MyCart extends StatelessWidget {
-  const MyCart({
-    Key key,
-    @required this.itemCount,
-  }) : super(key: key);
 
-  final int itemCount;
+class DataSearch extends SearchDelegate {
+//  bool flag = false;
+  List<FoodItem> searchMenu = List();
+  Future<List> searchMenu1;
+  Database db = Database();
 
+  Future<List<String>> getSearchMenu() async {
+    String str = await db.getMenuForSearch();
+    var data = jsonDecode(str);
+    int index = 0;
+    List<String> searchMenu1 = List();
+    for (var i in data) {
+      FoodItem food = FoodItem(foodName: i["f_name"], foodDesc: i["ingredients"], foodPrice: i['f_price'], foodimage: i["f_img"]);
+      searchMenu1.add(food.foodName+index.toString());
+      food.foodID=i["f_id"];
+      food.func();
+      searchMenu.add(food);
+      index++;
+    }
+
+  return searchMenu1;
+  }
+  Future<List> cart;
+  DataSearch(Future<List> cart){
+    this.cart=cart;
+    searchMenu1 = getSearchMenu();
+  }
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-            side:
-            BorderSide(width: 8, color: Color.fromRGBO(245, 215, 218, 1))),
-        color: Color.fromRGBO(244, 75, 89, 1),
-        child: Center(
-          child: Text(
-            "$itemCount",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ),
-    );
+  List<Widget> buildActions(BuildContext context) {
+    return[
+      IconButton(icon: Icon(Icons.clear,color: Colors.red,),onPressed: (){
+        query="";
+      },)
+    ];
+  }
+  @override
+  Widget buildLeading(BuildContext context) {
+
+    return IconButton(icon: Icon(Icons.arrow_back,color: Colors.red,),onPressed: (){
+      close(context, null);
+    },)
+    ;
+  }
+  @override
+  Widget buildResults(BuildContext context) {
+    return null;
+  }
+//    return Container(
+//      child: Text(len),
+//    );
+//  }
+//  @override
+//  Widget buildSuggestions(BuildContext context) {
+//      return FutureBuilder(
+//        future: searchMenu1,
+//          builder: (context, snapshot){
+//              if(!snapshot.data)
+//                return CircularProgressIndicator();
+//              for(var i in snapshot.data){
+//                print(i);
+//              }
+//               if(snapshot.data){
+//                if(query.isEmpty)
+//                  return Center(child: Text("Food is waiting"),);
+//                  return Center(child: Text("Loaded is waiting"),);
+//
+
+              //}
+//          },
+//      );
+//
+//
+//  }
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> suggest1=List();
+    List<String> suggestFood = List();
+    int myIndex;
+    return FutureBuilder(
+      future: searchMenu1,
+        builder: (context,snapshot){
+          if(!snapshot.hasData)
+            return Center(child: CircularProgressIndicator(),);
+          if(snapshot.hasData) {
+            suggestFood = snapshot.data;
+            suggest1= suggestFood.where((name)=>name.startsWith(query)).toList();
+            if (query.isEmpty)
+              return Center(child: Text("Search Food"),);
+            return InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    FoodPage(food: searchMenu[myIndex], cart: cart,)));
+              },
+              child: ListView.builder(itemBuilder: (context, index) {
+
+                print("hello:"+snapshot.connectionState.toString());
+                myIndex = int.parse(suggest1[index].substring(
+                    suggest1[index].length - 1, suggest1[index].length));
+                return ListTile(
+                  title: Text(suggest1[index]),
+                  leading: Container(width: 80,
+                      child: Image.memory(searchMenu[myIndex].foodbytes)),
+                  subtitle: Text("Rs" + searchMenu[myIndex].price),
+                );
+              },
+                itemCount: suggest1.length,
+              ),
+            );
+          }
+    });
   }
 }
 

@@ -11,6 +11,8 @@ class FoodItem{
   String catName;
   String quantity;
   String price;
+  int quantity1 = 1;
+  int totalPrice;
 
   FoodItem({this.foodID, this.foodName, this.foodDesc, this.foodimage, this.foodPrice, this.discPrice, this.catName, this.price, this.quantity});
 
@@ -53,6 +55,11 @@ class FoodItem{
     } catch(e){
       return "Price should be in digits";
     }
+  }
+
+  void incQuantity(){
+    quantity1++;
+    totalPrice+=int.parse(price);
   }
 
   String discPriceValid(){

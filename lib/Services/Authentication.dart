@@ -246,4 +246,10 @@ class Database{
     print(response.body);
     return response.body;
   }
+
+  Future<String> getMenuForSearch()async {
+    http.Response response = await http.get("https://vibrant-millions.000webhostapp.com/getFoodForSearch.php");
+    return response.body;
+  }
+  
 }

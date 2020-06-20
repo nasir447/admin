@@ -72,6 +72,11 @@ class _OrderState extends State<Order> {
             style: GoogleFonts.lato(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
           ),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.refresh), onPressed: (){setState(() {
+              pending = fillList("pending");
+            });})
+          ],
           bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorColor: Color.fromRGBO(244, 75, 89, 1),

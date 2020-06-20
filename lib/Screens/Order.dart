@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'package:Admin/Classes/Customer.dart';
-import 'package:Admin/Classes/OrderDisplayClass.dart';
 import 'package:Admin/Screens/OrderDisplay.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Admin/Services/Authentication.dart';
 import 'package:Admin/Classes/OrderClass.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import '../Classes/FoodItem.dart';
-import '../Classes/FoodItem.dart';
 import '../Widgets/alertDialog.dart';
 
 class Order extends StatefulWidget {

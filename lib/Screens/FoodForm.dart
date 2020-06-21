@@ -292,14 +292,19 @@ class _FoodFormState extends State<FoodForm> {
                                 
                                 String print = await db.createFood();
                                 //showAlertDialog(context, print);
+                                
                                 setState(() {
                                   spinner=false;
                                 });
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>(Category())
-                                  ));
+                                if(print == "Server Error!"){
+                                  showAlertDialog(context, print);
+                                }else{
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>(Category())
+                                    ));
+                                }
                                 }
                           }else{
                             showAlertDialog(context, "Enter all feilds");

@@ -1,6 +1,6 @@
 import 'package:Admin/Classes/Customer.dart';
 import 'package:Admin/Classes/OrderClass.dart';
-import 'package:Admin/Classes/OrderDisplayClass.dart';
+import 'package:Admin/Widgets/alertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
@@ -155,6 +155,9 @@ class _OrderDisplayState extends State<OrderDisplay> {
                     onPressed: () async {
                       var result = await db.statusAccept(widget.order.orderID);
                       print(result);
+                      if(result == "Server Error!"){
+                        showAlertDialog(context, result);
+                      }
                       Navigator.pop(context);
                     },
                     color: Colors.green,
@@ -175,6 +178,9 @@ class _OrderDisplayState extends State<OrderDisplay> {
                     onPressed: () async {
                       var result = await db.statusReject(widget.order.orderID);
                       print(result);
+                      if(result == "Server Error!"){
+                        showAlertDialog(context, result);
+                      }
                       Navigator.pop(context);
                     },
                     color: Colors.red,

@@ -125,6 +125,10 @@ class _LoginState extends State<Login> {
                            spinner = false;
                          });
 
+                          if(currentUser.getName()=="@"){
+                           showAlertDialog(context, "It might be server issue or network issue on your side please try again later");
+                         }
+
                          if(currentUser.matched==true){
                           // Navigator.popUntil(context, ModalRoute.withName('/'));
                            Navigator.pushReplacement(

@@ -46,6 +46,13 @@ class _OrderState extends State<Order> {
    return temp;
   }
 
+  void refresh(){
+    pending = fillList("pending");
+    accepted = fillList("on the way");
+    delivered = fillList("delivered");
+    cancelled = fillList("cancelled");
+  }
+
   @override
   void initState() {
     try {
@@ -71,7 +78,7 @@ class _OrderState extends State<Order> {
           ),
           actions: <Widget>[
             IconButton(icon: Icon(Icons.refresh), onPressed: (){setState(() {
-              pending = fillList("pending");
+              refresh();
             });})
           ],
           bottom: TabBar(

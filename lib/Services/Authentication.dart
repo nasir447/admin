@@ -36,27 +36,36 @@ class Database{
   }
 
   Future<String> createAccount()async{
-      http.Response response = await http.post(_url,
-          body: {
-            "name":_name,
-            "email":_email,
-            "password":_password,
-            "phone":_phone,
+      try{
+        http.Response response = await http.post(_url,
+            body: {
+              "name":_name,
+              "email":_email,
+              "password":_password,
+              "phone":_phone,
 
-          }
-      );
-      return response.body;
+            }
+        );
+        return response.body;
+      }catch(e){
+        return "Server Error!";
+      }
+      
   }
   Future<String> req()async{
-      http.Response response = await http.post(
-          "https://vibrant-millions.000webhostapp.com/CheckAdmin.php",
-          body: {
-            "name":_name,
-            "email":_email,
-            "phone":_phone
-          }
-      );
-      return  await response.body;
+      try{
+        http.Response response = await http.post(
+            "https://vibrant-millions.000webhostapp.com/CheckAdmin.php",
+            body: {
+              "name":_name,
+              "email":_email,
+              "phone":_phone
+            }
+        );
+        return  await response.body;
+      }catch(e){
+        return "Server Error!";
+      }
   }
 
   Future<String> checkCat()async{
@@ -71,22 +80,28 @@ class Database{
 
   Future<User> login(String email,String password)async{
       print(email + " " + password);
-      http.Response response = await http.post(
-          "https://vibrant-millions.000webhostapp.com/LoginAdmin.php",
-          body: {
-            "email" : email,
-            "password": password,
-          }
-      );
-      User user = User();
-      if(response.body!='0') {
-        user.setName(jsonDecode(response.body)['username']);
-        user.setEmail(jsonDecode(response.body)['email']);
-        user.matched=true;
+      try{
+        http.Response response = await http.post(
+            "https://vibrant-millions.000webhostapp.com/LoginAdmin.php",
+            body: {
+              "email" : email,
+              "password": password,
+            }
+        );
+        User user = User();
+        if(response.body!='0') {
+          user.setName(jsonDecode(response.body)['username']);
+          user.setEmail(jsonDecode(response.body)['email']);
+          user.matched=true;
+        }
+        else
+          user.matched=false;
+        return  await user;
+      } catch(e){
+        User user =User();
+        user.setName("@");
+        return user;
       }
-      else
-        user.matched=false;
-      return  await user;
   }
 
   Future<http.Response> getMenu(String cat_id)async{
@@ -123,30 +138,38 @@ class Database{
   }
 
   Future<String> createCategory()async{
-      http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/CatNewEntry.php",
-          body: {
-            "name":_catName,
-            "desc":_desc,
-            "img": _catImg,
-          }
-      );
-      print(response.body);
-      return response.body;
+      try{
+        http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/CatNewEntry.php",
+            body: {
+              "name":_catName,
+              "desc":_desc,
+              "img": _catImg,
+            }
+        );
+        print(response.body);
+        return response.body;
+      }catch(e){
+        return "Server Error!";
+      }
   }
 
   Future<String> createFood()async{
-      http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/createFood.php",
-          body: {
-            "name":_foodName,
-            "desc":_foodDesc,
-            "img": _foodimage,
-            "price": _foodPrice,
-            "discount": _discPrice,
-            "cat_id": _catId.toString()
-          }
-      );
-      print(response.body);
-      return response.body;
+      try{
+        http.Response response = await http.post("https://vibrant-millions.000webhostapp.com/createFood.php",
+            body: {
+              "name":_foodName,
+              "desc":_foodDesc,
+              "img": _foodimage,
+              "price": _foodPrice,
+              "discount": _discPrice,
+              "cat_id": _catId.toString()
+            }
+        );
+        print(response.body);
+        return response.body;
+      }catch(e){
+        return "Server Error!";
+      }
   }
 
  Future<String> deleteCategory(String id)async{
@@ -225,26 +248,34 @@ class Database{
 
   Future<String> statusAccept(String orderID)async{
     //print("iskay baad " + orderID);
-    http.Response response = await http.post(
-        "https://vibrant-millions.000webhostapp.com/statusAccept.php",
-        body: {
-          "id" : orderID
-        }
-    );
-    print(response.body);
-    return response.body;
+    try{
+      http.Response response = await http.post(
+          "https://vibrant-millions.000webhostapp.com/statusAccept.php",
+          body: {
+            "id" : orderID
+          }
+      );
+      print(response.body);
+      return response.body;
+    }catch(e){
+        return "Server Error!";
+      }
   }
 
   Future<String> statusReject(String orderID)async{
     //print("iskay baad " + orderID);
-    http.Response response = await http.post(
-        "https://vibrant-millions.000webhostapp.com/statusCancel.php",
-        body: {
-          "id" : orderID
-        }
-    );
-    print(response.body);
-    return response.body;
+    try{
+      http.Response response = await http.post(
+          "https://vibrant-millions.000webhostapp.com/statusCancel.php",
+          body: {
+            "id" : orderID
+          }
+      );
+      print(response.body);
+      return response.body;
+    }catch(e){
+        return "Server Error!";
+      }
   }
 
   Future<String> getMenuForSearch()async {

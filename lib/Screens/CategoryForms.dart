@@ -188,7 +188,7 @@ class _CategoryFormState extends State<CategoryForm> {
                             spinner = true;
                           });
                           if(item.catName == ""){
-                          showAlertDialog(context, "Catecory Nzme is requires");
+                          showAlertDialog(context, "Catecory Name is requires");
                          }
                           else if(item.catDesc == ""){
                             showAlertDialog(context, "Category discription is empty");
@@ -211,11 +211,15 @@ class _CategoryFormState extends State<CategoryForm> {
                                spinner=false;
                              });
                              dynamic print = await db.createCategory();
-                             Navigator.pushReplacement(
-                               context,
-                               MaterialPageRoute(
-                                 builder: (context) =>(Category())
-                               ));
+                             if(print == "Server Error!"){
+                               showAlertDialog(context, print);
+                             }else{
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>(Category())
+                                ));
+                             }
                             }
                         },
                         child: uploadimage == null || item.catName == "" || item.catDesc == "" ? 

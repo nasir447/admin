@@ -179,14 +179,20 @@ class _SignUpState extends State<SignUp> {
                               showAlertDialog(context,"email already taken");
                             else if(result=="3")
                               showAlertDialog(context,"Phone number already taken");
+                            else if(result == "Server Error!")
+                              showAlertDialog(context, result);
                           }
                            if (user.isUserValid()) {
-
-                             print(await db.createAccount());
+                             
+                             var signup = (await db.createAccount());
                              setState(() {
                                spinner=false;
                              });
-                            widget.toggleView();
+                            if(signup == "Server Error!"){
+                              showAlertDialog(context, signup);
+                            }else{
+                              widget.toggleView();
+                            }
                           }
                         },
                         child: Container(
